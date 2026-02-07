@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>UYGHUR SCHOLAR: GARDEN</title>
+    <title>Uyghur Alphabet Practice Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* September Garden Palette */
-            --sage-green: #81b29a;
-            --terra-cotta: #e07a5f;
-            --golden-hour: #f2cc8f;
-            --deep-loam: #1b2618; /* Dark forest green/black */
-            --soft-cream: #f4f1de;
-            --muted-shadow: #3d405b;
+            /* Refined September Garden Palette */
+            --bg-deep: #2d3a30;        /* Deep Moss */
+            --accent-clay: #d66853;    /* Terracotta */
+            --accent-leaf: #7d9d85;    /* Muted Sage */
+            --accent-wheat: #e9c46a;   /* Goldenrod */
+            --text-cream: #fefae0;     /* Soft Off-white */
+            --card-dark: #1f2921;
             
             --pixel-font: 'Press Start 2P', cursive;
         }
 
         body { 
             font-family: var(--pixel-font); 
-            background: var(--deep-loam); 
-            color: var(--soft-cream);
+            background: var(--bg-deep); 
+            color: var(--text-cream);
             margin: 0; 
             display: flex; 
             flex-direction: column; 
@@ -31,17 +31,16 @@
             text-transform: uppercase;
         }
 
-        /* --- Texture Overlay (Softened Scanlines) --- */
+        /* Subtle Texture Overlay */
         body::before {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: 
-                linear-gradient(rgba(244, 241, 222, 0.03) 50%, rgba(0, 0, 0, 0.05) 50%),
-                linear-gradient(90deg, rgba(129, 178, 154, 0.03), rgba(224, 122, 95, 0.02));
+            background: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), 
+                        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px;
             z-index: 100;
-            background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
@@ -49,164 +48,136 @@
         .active { display: flex; }
 
         h1 { 
-            font-size: 18px; 
+            font-size: 16px; 
             text-align: center; 
-            color: var(--terra-cotta); 
-            text-shadow: 3px 3px var(--muted-shadow); 
+            color: var(--accent-wheat); 
+            text-shadow: 2px 2px var(--bg-deep), 4px 4px var(--accent-clay); 
             margin-bottom: 30px; 
-            letter-spacing: 2px;
+            line-height: 1.5;
         }
 
         /* Menu Styles */
         .menu-card { 
-            border: 4px solid var(--sage-green); 
-            padding: 20px; 
-            background: rgba(27, 38, 24, 0.9); 
-            box-shadow: 6px 6px 0px rgba(129, 178, 154, 0.2); 
-            border-radius: 4px;
+            border: 4px solid var(--accent-leaf); 
+            padding: 25px; 
+            background: var(--card-dark); 
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.3);
         }
         .option-group { margin-bottom: 25px; }
-        
-        label { 
-            display: block; 
-            margin-bottom: 10px; 
-            font-size: 10px; 
-            color: var(--sage-green); 
-        }
+        label { display: block; margin-bottom: 12px; font-size: 10px; color: var(--accent-leaf); letter-spacing: 1px; }
         
         select { 
-            width: 100%; padding: 10px; 
-            background: #2f3e30; 
-            color: var(--golden-hour); 
-            border: 2px solid var(--golden-hour); 
-            font-family: var(--pixel-font); 
-            font-size: 10px;
+            width: 100%; padding: 12px; background: #131a14; color: var(--text-cream); 
+            border: 2px solid var(--accent-clay); font-family: var(--pixel-font); font-size: 10px;
             outline: none;
         }
 
         /* Memory Cards */
         .game-board { display: grid; grid-gap: 12px; width: 100%; margin-top: 10px; }
-        .card { height: 90px; perspective: 1000px; cursor: pointer; }
-        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.4s; transform-style: preserve-3d; }
+        .card { height: 110px; perspective: 1000px; cursor: pointer; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
         .card.flipped .card-inner { transform: rotateY(180deg); }
         
         .card-face { 
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
             display: flex; align-items: center; justify-content: center; 
-            border: 3px solid var(--sage-green); 
-            font-size: 10px; text-align: center;
-            border-radius: 4px;
+            border: 3px solid var(--accent-leaf); 
+            border-radius: 8px;
         }
         
-        /* Card Back Pattern - Leafy/Garden Grid */
         .card-front { 
-            background: repeating-linear-gradient(
-                45deg, 
-                #2f3e30, 
-                #2f3e30 10px, 
-                #3a4a3b 10px, 
-                #3a4a3b 20px
-            ); 
+            background: var(--accent-leaf); 
+            background: repeating-linear-gradient(45deg, var(--accent-leaf), var(--accent-leaf) 10px, #6b8a72 10px, #6b8a72 20px); 
         }
         
         .card-back { 
-            background: #253326; 
+            background: var(--card-dark); 
             transform: rotateY(180deg); 
-            color: var(--golden-hour); 
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5); 
+            color: var(--accent-wheat); 
+            font-size: 14px; /* Slightly larger Latin/Cyrillic */
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5); 
         }
         
-        .is-uyghur { font-family: "Microsoft Uighur", serif; font-size: 32px; text-transform: none; }
+        .is-uyghur { font-family: "Microsoft Uighur", serif; font-size: 42px; text-transform: none; }
 
         /* Drawing Pad */
         .draw-container { 
-            position: relative; width: 100%; height: 350px; 
-            background: #253326; 
-            border: 4px solid var(--golden-hour); 
-            margin: 20px 0; touch-action: none; 
-            box-shadow: 4px 4px 0px rgba(242, 204, 143, 0.2); 
+            position: relative; width: 100%; height: 350px; background: var(--card-dark); 
+            border: 4px solid var(--accent-wheat); margin: 20px 0; touch-action: none; 
+            box-shadow: 0 0 20px rgba(233, 196, 106, 0.1);
         }
-        
         .ref-box { 
-            position: absolute; top: 10px; left: 10px; width: 70px; height: 70px; 
-            border: 2px dashed var(--sage-green); 
-            display: flex; align-items: center; justify-content: center; 
+            position: absolute; top: 10px; left: 10px; width: 80px; height: 80px; 
+            border: 2px dashed #444; display: flex; align-items: center; justify-content: center; 
             background: rgba(255,255,255,0.03); 
         }
-        .ref-text { font-family: "Microsoft Uighur", serif; font-size: 35px; color: var(--sage-green); opacity: 0.6; text-transform: none; }
+        .ref-text { font-family: "Microsoft Uighur", serif; font-size: 40px; color: #555; text-transform: none; }
         canvas { width: 100%; height: 100%; cursor: crosshair; }
 
-        /* Global Buttons */
+        /* Buttons */
         .btn { 
-            background: var(--terra-cotta); 
-            color: var(--deep-loam); 
-            border: none; padding: 15px; 
-            font-family: var(--pixel-font); font-size: 12px; cursor: pointer; margin-bottom: 10px;
-            box-shadow: 4px 4px 0px var(--muted-shadow);
-            border-radius: 2px;
-            transition: transform 0.1s, box-shadow 0.1s;
+            background: var(--accent-clay); color: var(--text-cream); border: none; padding: 18px; 
+            font-family: var(--pixel-font); font-size: 12px; cursor: pointer; margin-bottom: 12px;
+            box-shadow: 4px 4px 0px #8a3a2b; transition: all 0.1s;
         }
-        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--muted-shadow); }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #8a3a2b; }
         
         .btn-menu { 
-            background: none; 
-            color: var(--sage-green); 
-            border: 2px solid var(--sage-green); 
-            font-size: 8px; padding: 5px 10px; 
-            border-radius: 2px;
+            background: none; color: var(--accent-leaf); border: 2px solid var(--accent-leaf); 
+            font-size: 8px; padding: 8px 12px; 
         }
-        .btn-menu:hover { background: var(--sage-green); color: var(--deep-loam); }
+        .btn-menu:hover { background: var(--accent-leaf); color: var(--bg-deep); }
     </style>
 </head>
 <body>
 
     <div id="setupScreen" class="screen active">
-        <h1>[ GARDEN SCHOLAR ]</h1>
+        <h1>Uyghur Alphabet<br>Practice Game</h1>
         <div class="menu-card">
             <div class="option-group">
-                <label>SELECT MODE</label>
+                <label>GAME MODE</label>
                 <select id="gameMode">
                     <option value="memory">MEMORY MATCH</option>
                     <option value="draw">TRACE DRAW</option>
                 </select>
             </div>
             <div class="option-group">
-                <label>SELECT SCRIPT</label>
+                <label>SCRIPT TYPE</label>
                 <select id="scriptType">
                     <option value="latin">LATIN</option>
                     <option value="cyrillic">CYRILLIC</option>
                 </select>
             </div>
             <div class="option-group">
-                <label>DIFFICULTY</label>
+                <label>CONTENT</label>
                 <select id="contentType">
                     <option value="alphabet">SINGLE LETTERS</option>
-                    <option value="words">777 COMBOS</option>
+                    <option value="words">LETTER COMBINATIONS</option>
                 </select>
             </div>
-            <button class="btn" style="width:100%" onclick="startGame()">ENTER GARDEN</button>
+            <button class="btn" style="width:100%" onclick="startGame()">START GAME</button>
         </div>
     </div>
 
     <div id="memoryScreen" class="screen">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span id="lvlDisplay" style="font-size:10px; color: var(--golden-hour);">LVL: 01</span>
-            <button class="btn-menu" onclick="showMenu()">EXIT</button>
+            <span id="lvlDisplay" style="font-size:10px; color: var(--accent-wheat)">LVL: 01</span>
+            <button class="btn-menu" onclick="showMenu()">QUIT</button>
         </div>
         <div id="gameBoard" class="game-board" style="margin-top:20px"></div>
     </div>
 
     <div id="drawScreen" class="screen">
         <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 id="drawTarget" style="font-size:16px; color:var(--golden-hour); margin:0;">A</h2>
-            <button class="btn-menu" onclick="showMenu()">EXIT</button>
+            <h2 id="drawTarget" style="font-size:16px; color:var(--accent-wheat); margin:0;">A</h2>
+            <button class="btn-menu" onclick="showMenu()">QUIT</button>
         </div>
         <div class="draw-container">
             <div class="ref-box"><div id="ghostText" class="ref-text">ئا</div></div>
             <canvas id="drawCanvas"></canvas>
         </div>
-        <button class="btn" style="width:100%" onclick="nextDrawing()">NEXT SEED</button>
-        <button class="btn" style="width:100%; background: #3a4a3b; color: var(--sage-green); box-shadow:4px 4px 0 #1b2618" onclick="clearCanvas()">CLEAR SOIL</button>
+        <button class="btn" style="width:100%" onclick="nextDrawing()">NEXT</button>
+        <button class="btn" style="width:100%; background:#4a5a4d; box-shadow:4px 4px 0 #2d3a30" onclick="clearCanvas()">RESET</button>
     </div>
 
     <script>
@@ -267,7 +238,6 @@
             }
         }
 
-        // --- REFINED MEMORY LOGIC ---
         let firstCard = null, secondCard = null, lock = false;
 
         function initMemory() {
@@ -277,7 +247,7 @@
             const script = document.getElementById('scriptType').value;
             
             board.innerHTML = '';
-            const pairsCount = 3 + currentLevel; 
+            const pairsCount = 3 + currentLevel;
             const selected = [...data].sort(() => 0.5 - Math.random()).slice(0, Math.min(pairsCount, 10));
             
             let deck = [];
@@ -314,14 +284,13 @@
                 firstCard.classList.add('matched'); secondCard.classList.add('matched');
                 firstCard = null; secondCard = null; lock = false;
                 if(document.querySelectorAll('.matched').length === document.querySelectorAll('.card').length) {
-                    setTimeout(() => { alert("BLOOM!"); currentLevel++; initMemory(); }, 500);
+                    setTimeout(() => { alert("LEVEL COMPLETE!"); currentLevel++; initMemory(); }, 500);
                 }
             } else {
                 setTimeout(() => { firstCard.classList.remove('flipped'); secondCard.classList.remove('flipped'); firstCard = null; secondCard = null; lock = false; }, 800);
             }
         }
 
-        // --- DRAWING LOGIC ---
         function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
         function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         function nextDrawing() {
@@ -344,9 +313,7 @@
         canvas.addEventListener('mousedown', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
         canvas.addEventListener('mousemove', (e) => { 
             if(!drawing) return; e.preventDefault(); const p = getPos(e); 
-            // Changed stroke style to Golden Hour
-            ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = '#f2cc8f';
-            ctx.shadowBlur = 5; ctx.shadowColor = '#e07a5f';
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = '#e9c46a';
             ctx.lineTo(p.x, p.y); ctx.stroke();
         });
         window.addEventListener('mouseup', () => drawing = false);
