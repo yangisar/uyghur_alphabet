@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Uyghur Alphabet Practice Game</title>
+    <title>Uyghur and Old Turkic Alphabet Practice Game</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Refined September Garden Palette */
-            --bg-deep: #2d3a30;        /* Deep Moss */
-            --accent-clay: #d66853;    /* Terracotta */
-            --accent-leaf: #7d9d85;    /* Muted Sage */
-            --accent-wheat: #e9c46a;   /* Goldenrod */
-            --text-cream: #fefae0;     /* Soft Off-white */
-            --card-dark: #1f2921;
+            /* Harmonious September Garden Palette */
+            --bg-deep: #283618;        /* Forest Moss */
+            --bg-mid: #606c38;         /* Sage Leaf */
+            --accent-clay: #bc6c25;    /* Dried Earth */
+            --accent-wheat: #fefae0;   /* Harvest Cream */
+            --accent-gold: #dda15e;    /* Golden Hour */
+            --danger: #ae2012;         /* Autumn Berry Red */
+            --success: #52b788;        /* Match Green */
             
             --pixel-font: 'Press Start 2P', cursive;
         }
@@ -21,7 +22,7 @@
         body { 
             font-family: var(--pixel-font); 
             background: var(--bg-deep); 
-            color: var(--text-cream);
+            color: var(--accent-wheat);
             margin: 0; 
             display: flex; 
             flex-direction: column; 
@@ -31,118 +32,253 @@
             text-transform: uppercase;
         }
 
-        /* Subtle Texture Overlay */
-        body::before {
+        /* Scanline Texture Overlay */
+        body::after {
             content: " ";
             display: block;
             position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), 
-                        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 20px 20px;
-            z-index: 100;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            z-index: 1000;
+            background-size: 100% 4px;
             pointer-events: none;
         }
 
-        .screen { display: none; width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; flex-direction: column; }
+        .screen { display: none; width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; flex-direction: column; flex-grow: 1; }
         .active { display: flex; }
 
         h1 { 
-            font-size: 16px; 
+            font-size: 14px; 
             text-align: center; 
-            color: var(--accent-wheat); 
-            text-shadow: 2px 2px var(--bg-deep), 4px 4px var(--accent-clay); 
-            margin-bottom: 30px; 
-            line-height: 1.5;
+            color: var(--accent-gold); 
+            text-shadow: 3px 3px var(--bg-deep); 
+            margin: 20px 0 30px 0;
+            line-height: 1.6;
+        }
+
+        h2 {
+            font-size: 11px;
+            text-align: center;
+            color: var(--accent-wheat);
+            margin: 10px 0 20px 0;
+            line-height: 1.6;
+            font-weight: normal;
         }
 
         /* Menu Styles */
         .menu-card { 
-            border: 4px solid var(--accent-leaf); 
+            border: 4px solid var(--bg-mid); 
             padding: 25px; 
-            background: var(--card-dark); 
-            box-shadow: 8px 8px 0px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.2); 
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            margin-bottom: 15px;
         }
-        .option-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 12px; font-size: 10px; color: var(--accent-leaf); letter-spacing: 1px; }
+
+        /* Script Choice Cards */
+        .script-choice {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .script-card {
+            border: 4px solid var(--bg-mid);
+            padding: 30px 25px;
+            background: rgba(0,0,0,0.3);
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .script-card:hover {
+            border-color: var(--accent-gold);
+            background: rgba(0,0,0,0.4);
+            transform: translateY(-2px);
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.3);
+        }
+
+        .script-card:active {
+            transform: translateY(2px);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+        }
+
+        .script-title {
+            font-size: 12px;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .script-sample {
+            font-size: 48px;
+            color: var(--accent-wheat);
+            margin: 15px 0;
+            line-height: 1.4;
+        }
+
+        .script-sample.uyghur {
+            font-family: "Microsoft Uighur", serif;
+            text-transform: none;
+        }
+
+        .script-sample.orkhon {
+            font-family: "Segoe UI Historic", "Noto Sans Old Turkic", serif;
+            text-transform: none;
+        }
+
+        .script-desc {
+            font-size: 8px;
+            color: var(--accent-wheat);
+            opacity: 0.7;
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .option-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 10px; font-size: 9px; color: var(--accent-gold); }
         
         select { 
-            width: 100%; padding: 12px; background: #131a14; color: var(--text-cream); 
-            border: 2px solid var(--accent-clay); font-family: var(--pixel-font); font-size: 10px;
+            width: 100%; padding: 12px; background: var(--bg-deep); color: var(--accent-wheat); 
+            border: 2px solid var(--accent-gold); font-family: var(--pixel-font); font-size: 10px;
             outline: none;
         }
 
+        /* Toggle Switch */
+        .toggle-container { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .switch {
+            width: 50px; height: 24px; background: #333; border: 2px solid var(--accent-gold);
+            position: relative; transition: 0.3s;
+        }
+        .switch::after {
+            content: ''; position: absolute; width: 16px; height: 16px; 
+            background: var(--accent-wheat); top: 2px; left: 2px; transition: 0.3s;
+        }
+        input:checked + .switch { background: var(--accent-clay); }
+        input:checked + .switch::after { left: 28px; }
+
+        /* HUD */
+        .hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 10px; height: 30px; }
+        .lives-box { color: var(--danger); }
+
         /* Memory Cards */
-        .game-board { display: grid; grid-gap: 12px; width: 100%; margin-top: 10px; }
-        .card { height: 110px; perspective: 1000px; cursor: pointer; }
-        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.5s; transform-style: preserve-3d; }
+        .game-board { display: grid; grid-gap: 12px; width: 100%; }
+        .card { height: 115px; perspective: 1000px; cursor: pointer; }
+        .card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.4s; transform-style: preserve-3d; }
         .card.flipped .card-inner { transform: rotateY(180deg); }
         
         .card-face { 
             position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
             display: flex; align-items: center; justify-content: center; 
-            border: 3px solid var(--accent-leaf); 
-            border-radius: 8px;
+            border: 3px solid var(--bg-mid); border-radius: 6px;
+            transition: all 0.3s;
         }
+        .card-front { background: var(--bg-mid); background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px); }
+        .card-back { background: var(--bg-deep); transform: rotateY(180deg); color: var(--accent-gold); font-size: 16px; box-shadow: inset 0 0 15px rgba(0,0,0,0.4); }
         
-        .card-front { 
-            background: var(--accent-leaf); 
-            background: repeating-linear-gradient(45deg, var(--accent-leaf), var(--accent-leaf) 10px, #6b8a72 10px, #6b8a72 20px); 
+        /* Matched cards get pleasant warm golden color */
+        .card.matched .card-face { 
+            border-color: #f4a261;
+            background: linear-gradient(135deg, rgba(244, 162, 97, 0.25) 0%, rgba(233, 196, 106, 0.2) 100%);
+            box-shadow: 0 0 20px rgba(244, 162, 97, 0.3);
         }
-        
-        .card-back { 
-            background: var(--card-dark); 
-            transform: rotateY(180deg); 
-            color: var(--accent-wheat); 
-            font-size: 14px; /* Slightly larger Latin/Cyrillic */
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5); 
+        .card.matched .card-back {
+            color: #f4a261;
+            box-shadow: inset 0 0 25px rgba(244, 162, 97, 0.4);
+            background: linear-gradient(135deg, rgba(40, 54, 24, 0.8) 0%, rgba(60, 80, 40, 0.6) 100%);
         }
-        
-        .is-uyghur { font-family: "Microsoft Uighur", serif; font-size: 42px; text-transform: none; }
+        .card.matched .card-front {
+            background: linear-gradient(135deg, rgba(244, 162, 97, 0.3) 0%, rgba(233, 196, 106, 0.25) 100%);
+        }
+
+        .is-uyghur { font-family: "Microsoft Uighur", serif; font-size: 48px; text-transform: none; }
+        .is-orkhon { font-family: "Segoe UI Historic", "Noto Sans Old Turkic", serif; font-size: 36px; text-transform: none; }
 
         /* Drawing Pad */
         .draw-container { 
-            position: relative; width: 100%; height: 350px; background: var(--card-dark); 
-            border: 4px solid var(--accent-wheat); margin: 20px 0; touch-action: none; 
-            box-shadow: 0 0 20px rgba(233, 196, 106, 0.1);
+            position: relative; width: 100%; height: 320px; background: #1a1a1a; 
+            border: 4px solid var(--accent-gold); margin-bottom: 15px; touch-action: none; 
         }
-        .ref-box { 
-            position: absolute; top: 10px; left: 10px; width: 80px; height: 80px; 
-            border: 2px dashed #444; display: flex; align-items: center; justify-content: center; 
-            background: rgba(255,255,255,0.03); 
+        
+        .ghost-preview {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 64px;
+            color: rgba(221, 161, 94, 0.15);
+            pointer-events: none;
+            z-index: 1;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        .ref-text { font-family: "Microsoft Uighur", serif; font-size: 40px; color: #555; text-transform: none; }
-        canvas { width: 100%; height: 100%; cursor: crosshair; }
+        
+        .ghost-preview.is-uyghur {
+            font-family: "Microsoft Uighur", serif;
+            text-transform: none;
+        }
+        
+        .ghost-preview.is-orkhon {
+            font-family: "Segoe UI Historic", "Noto Sans Old Turkic", serif;
+            text-transform: none;
+        }
+        
+        canvas { width: 100%; height: 100%; cursor: crosshair; position: relative; z-index: 2; }
+
+        /* Footer */
+        footer {
+            margin-top: auto; padding: 20px; font-size: 7px; text-align: center;
+            color: var(--accent-gold); line-height: 1.8; opacity: 0.8;
+        }
+        footer a { color: var(--accent-wheat); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+        .ig-icon { width: 10px; height: 10px; fill: var(--accent-wheat); }
 
         /* Buttons */
         .btn { 
-            background: var(--accent-clay); color: var(--text-cream); border: none; padding: 18px; 
-            font-family: var(--pixel-font); font-size: 12px; cursor: pointer; margin-bottom: 12px;
-            box-shadow: 4px 4px 0px #8a3a2b; transition: all 0.1s;
+            background: var(--accent-clay); color: var(--accent-wheat); border: none; padding: 15px; 
+            font-family: var(--pixel-font); font-size: 11px; cursor: pointer; margin-bottom: 10px;
+            box-shadow: 4px 4px 0px #5e3412; width: 100%;
         }
-        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #8a3a2b; }
-        
-        .btn-menu { 
-            background: none; color: var(--accent-leaf); border: 2px solid var(--accent-leaf); 
-            font-size: 8px; padding: 8px 12px; 
-        }
-        .btn-menu:hover { background: var(--accent-leaf); color: var(--bg-deep); }
+        .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #5e3412; }
+        .btn-menu { background: none; color: var(--accent-gold); border: 2px solid var(--accent-gold); font-size: 8px; padding: 5px 8px; }
+        .btn-secondary { background: var(--bg-mid); box-shadow: 4px 4px 0 var(--bg-deep); }
     </style>
 </head>
 <body>
 
-    <div id="setupScreen" class="screen active">
-        <h1>Uyghur Alphabet<br>Practice Game</h1>
+    <!-- MAIN SCREEN: Choose Script Type -->
+    <div id="mainScreen" class="screen active">
+        <h1>Uyghur and Old Turkic<br>Alphabet Practice Game</h1>
+        <h2>Choose Your Script</h2>
+        
+        <div class="script-choice">
+            <div class="script-card" onclick="selectScript('uyghur')">
+                <div class="script-title">Uyghur Kona Yëziq</div>
+                <div class="script-sample uyghur">ئۇيغۇر يېزىقى</div>
+                <div class="script-desc">Perso-Arabic Script</div>
+            </div>
+
+            <div class="script-card" onclick="selectScript('orkhon')">
+                <div class="script-title">Göktürk, Orkhon,<br>Orkhon-Yenisey Script</div>
+                <div class="script-sample orkhon">𐱅𐰇𐰼𐰜</div>
+                <div class="script-desc">Old Turkic Script</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTIONS SCREEN -->
+    <div id="setupScreen" class="screen">
+        <h1 id="scriptHeader">Practice Options</h1>
         <div class="menu-card">
             <div class="option-group">
-                <label>GAME MODE</label>
+                <label>SELECT MODE</label>
                 <select id="gameMode">
                     <option value="memory">MEMORY MATCH</option>
                     <option value="draw">TRACE DRAW</option>
                 </select>
             </div>
             <div class="option-group">
-                <label>SCRIPT TYPE</label>
+                <label>SCRIPT TO MATCH WITH</label>
                 <select id="scriptType">
                     <option value="latin">LATIN</option>
                     <option value="cyrillic">CYRILLIC</option>
@@ -155,78 +291,191 @@
                     <option value="words">LETTER COMBINATIONS</option>
                 </select>
             </div>
-            <button class="btn" style="width:100%" onclick="startGame()">START GAME</button>
+            <div class="option-group">
+                <label class="toggle-container">
+                    <span>ENABLE STAKES (7 LIVES)</span>
+                    <input type="checkbox" id="stakesToggle" style="display:none">
+                    <div class="switch"></div>
+                </label>
+            </div>
+            <button class="btn" onclick="startGame()">START PRACTICE</button>
+            <button class="btn btn-secondary" onclick="backToMain()">BACK</button>
         </div>
     </div>
 
+    <!-- MEMORY GAME SCREEN -->
     <div id="memoryScreen" class="screen">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span id="lvlDisplay" style="font-size:10px; color: var(--accent-wheat)">LVL: 01</span>
+        <div class="hud">
+            <span id="lvlDisplay">LVL: 01</span>
+            <span id="livesContainer" class="lives-box"></span>
             <button class="btn-menu" onclick="showMenu()">QUIT</button>
         </div>
-        <div id="gameBoard" class="game-board" style="margin-top:20px"></div>
+        <div id="gameBoard" class="game-board"></div>
     </div>
 
+    <!-- DRAWING SCREEN -->
     <div id="drawScreen" class="screen">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h2 id="drawTarget" style="font-size:16px; color:var(--accent-wheat); margin:0;">A</h2>
+        <div class="hud">
+            <h2 id="drawTarget" style="font-size:14px; color:var(--accent-gold); margin:0;">A</h2>
             <button class="btn-menu" onclick="showMenu()">QUIT</button>
         </div>
         <div class="draw-container">
-            <div class="ref-box"><div id="ghostText" class="ref-text">ئا</div></div>
+            <div id="ghostLetter" class="ghost-preview"></div>
             <canvas id="drawCanvas"></canvas>
         </div>
-        <button class="btn" style="width:100%" onclick="nextDrawing()">NEXT</button>
-        <button class="btn" style="width:100%; background:#4a5a4d; box-shadow:4px 4px 0 #2d3a30" onclick="clearCanvas()">RESET</button>
+        <button class="btn" onclick="nextDrawing()">NEXT LETTER</button>
+        <button class="btn btn-secondary" onclick="clearCanvas()">RESET PAD</button>
     </div>
 
+    <footer>
+        Created using AI tools by Yadykar Ibraimov<br>
+        Follow 
+        <a href="https://instagram.com/yangisar/" target="_blank">
+            <svg class="ig-icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            @yangisar
+        </a>
+    </footer>
+
     <script>
-        const alphabet = [
-            { latin: "A", cyrillic: "А", uyghur: "ئا" }, { latin: "E", cyrillic: "Ә", uyghur: "ئە" },
-            { latin: "B", cyrillic: "Б", uyghur: "ب" }, { latin: "P", cyrillic: "П", uyghur: "پ" },
-            { latin: "T", cyrillic: "Т", uyghur: "ت" }, { latin: "J", cyrillic: "Җ", uyghur: "ج" },
-            { latin: "Ch", cyrillic: "Ч", uyghur: "چ" }, { latin: "X", cyrillic: "Х", uyghur: "خ" },
-            { latin: "D", cyrillic: "Д", uyghur: "د" }, { latin: "R", cyrillic: "Р", uyghur: "ر" },
-            { latin: "Z", cyrillic: "З", uyghur: "ز" }, { latin: "S", cyrillic: "С", uyghur: "س" },
-            { latin: "Sh", cyrillic: "Ш", uyghur: "ش" }, { latin: "Gh", cyrillic: "Ғ", uyghur: "غ" },
-            { latin: "Q", cyrillic: "Қ", uyghur: "ق" }, { latin: "K", cyrillic: "К", uyghur: "ك" },
-            { latin: "G", cyrillic: "Г", uyghur: "گ" }, { latin: "L", cyrillic: "Л", uyghur: "ل" },
-            { latin: "M", cyrillic: "М", uyghur: "م" }, { latin: "N", cyrillic: "Н", uyghur: "ن" },
-            { latin: "O", cyrillic: "О", uyghur: "ئو" }, { latin: "U", cyrillic: "У", uyghur: "ئۇ" },
-            { latin: "I", cyrillic: "И", uyghur: "ئى" }, { latin: "Y", cyrillic: "Й", uyghur: "ي" }
+        // Alphabet data for both scripts
+        const uyghurAlphabet = [
+            { latin: "A", cyrillic: "А", uyghur: "ئا" }, 
+            { latin: "E", cyrillic: "Ә", uyghur: "ئە" },
+            { latin: "B", cyrillic: "Б", uyghur: "ب" }, 
+            { latin: "P", cyrillic: "П", uyghur: "پ" },
+            { latin: "T", cyrillic: "Т", uyghur: "ت" }, 
+            { latin: "J", cyrillic: "Җ", uyghur: "ج" },
+            { latin: "Ch", cyrillic: "Ч", uyghur: "چ" }, 
+            { latin: "X", cyrillic: "Х", uyghur: "خ" },
+            { latin: "D", cyrillic: "Д", uyghur: "د" }, 
+            { latin: "R", cyrillic: "Р", uyghur: "ر" },
+            { latin: "Z", cyrillic: "З", uyghur: "ز" }, 
+            { latin: "S", cyrillic: "С", uyghur: "س" },
+            { latin: "Sh", cyrillic: "Ш", uyghur: "ش" }, 
+            { latin: "Gh", cyrillic: "Ғ", uyghur: "غ" },
+            { latin: "Q", cyrillic: "Қ", uyghur: "ق" }, 
+            { latin: "K", cyrillic: "К", uyghur: "ك" },
+            { latin: "G", cyrillic: "Г", uyghur: "گ" }, 
+            { latin: "L", cyrillic: "Л", uyghur: "ل" },
+            { latin: "M", cyrillic: "М", uyghur: "م" }, 
+            { latin: "N", cyrillic: "Н", uyghur: "ن" },
+            { latin: "O", cyrillic: "О", uyghur: "ئو" }, 
+            { latin: "U", cyrillic: "У", uyghur: "ئۇ" },
+            { latin: "I", cyrillic: "И", uyghur: "ئى" }, 
+            { latin: "Y", cyrillic: "Й", uyghur: "ي" }
         ];
 
-        function getCombinations() {
+        const orkhonAlphabet = [
+            { latin: "A", cyrillic: "А", orkhon: "𐰀" }, 
+            { latin: "E", cyrillic: "Ә", orkhon: "𐰀" },
+            { latin: "B", cyrillic: "Б", orkhon: "𐰋" }, 
+            { latin: "P", cyrillic: "П", orkhon: "𐰯" },
+            { latin: "T", cyrillic: "Т", orkhon: "𐱅" }, 
+            { latin: "J", cyrillic: "Җ", orkhon: "𐰲" },
+            { latin: "Ch", cyrillic: "Ч", orkhon: "𐰲" }, 
+            { latin: "X", cyrillic: "Х", orkhon: "𐰴" },
+            { latin: "D", cyrillic: "Д", orkhon: "𐰑" }, 
+            { latin: "R", cyrillic: "Р", orkhon: "𐰺" },
+            { latin: "Z", cyrillic: "З", orkhon: "𐰔" }, 
+            { latin: "S", cyrillic: "С", orkhon: "𐰽" },
+            { latin: "Sh", cyrillic: "Ш", orkhon: "𐱁" }, 
+            { latin: "Gh", cyrillic: "Ғ", orkhon: "𐰍" },
+            { latin: "Q", cyrillic: "Қ", orkhon: "𐰴" }, 
+            { latin: "K", cyrillic: "К", orkhon: "𐰚" },
+            { latin: "G", cyrillic: "Г", orkhon: "𐰏" }, 
+            { latin: "L", cyrillic: "Л", orkhon: "𐰠" },
+            { latin: "M", cyrillic: "М", orkhon: "𐰢" }, 
+            { latin: "N", cyrillic: "Н", orkhon: "𐰤" },
+            { latin: "O", cyrillic: "О", orkhon: "𐰆" }, 
+            { latin: "U", cyrillic: "У", orkhon: "𐰆" },
+            { latin: "I", cyrillic: "И", orkhon: "𐰃" }, 
+            { latin: "Y", cyrillic: "Й", orkhon: "𐰖" }
+        ];
+
+        let selectedScriptType = 'uyghur'; // 'uyghur' or 'orkhon'
+        let currentAlphabet = uyghurAlphabet;
+        let targetScriptKey = 'uyghur'; // What script to match against
+
+        function getCombinations(alphabet, scriptKey) {
             let combos = [];
             const vowels = alphabet.filter(l => "AEIOU".includes(l.latin));
             const cons = alphabet.filter(l => !"AEIOU".includes(l.latin));
-            for(let i=0; i<777; i++) {
+            for(let i=0; i<100; i++) {
                 let c1 = cons[i % cons.length];
                 let v = vowels[Math.floor(i / 5) % vowels.length];
                 let c2 = cons[(i + 7) % cons.length];
-                combos.push({
+                
+                let combo = {
                     latin: c1.latin + v.latin.toLowerCase() + c2.latin.toLowerCase(),
                     cyrillic: c1.cyrillic + v.cyrillic.toLowerCase() + c2.cyrillic.toLowerCase(),
-                    uyghur: c1.uyghur + v.uyghur.replace('ئ', '') + c2.uyghur.replace('ئ', ''),
                     id: "combo_" + i
-                });
+                };
+                
+                if (scriptKey === 'uyghur') {
+                    combo.uyghur = c1.uyghur + v.uyghur.replace('ئ', '') + c2.uyghur.replace('ئ', '');
+                } else {
+                    combo.orkhon = c1.orkhon + v.orkhon + c2.orkhon;
+                }
+                
+                combos.push(combo);
             }
             return combos;
         }
-        const combinationData = getCombinations();
 
+        let combinationData = [];
         let currentLevel = 1;
+        let lives = 7;
+        let streak = 0;
+        let stakesEnabled = false;
+        let firstCard = null, secondCard = null, lock = false;
+        let allFlippedOnce = new Set();
+
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
+
+        function selectScript(scriptType) {
+            selectedScriptType = scriptType;
+            
+            if (scriptType === 'uyghur') {
+                currentAlphabet = uyghurAlphabet;
+                targetScriptKey = 'uyghur';
+                document.getElementById('scriptHeader').textContent = 'Uyghur Kona Yëziq';
+            } else {
+                currentAlphabet = orkhonAlphabet;
+                targetScriptKey = 'orkhon';
+                document.getElementById('scriptHeader').textContent = 'Turkic Orkhon';
+            }
+            
+            combinationData = getCombinations(currentAlphabet, targetScriptKey);
+            
+            document.getElementById('mainScreen').classList.remove('active');
+            document.getElementById('setupScreen').classList.add('active');
+        }
+
+        function backToMain() {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('mainScreen').classList.add('active');
+        }
 
         function showMenu() {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('setupScreen').classList.add('active');
         }
 
+        function updateLivesDisplay() {
+            const container = document.getElementById('livesContainer');
+            if(!stakesEnabled) { container.innerHTML = ''; return; }
+            container.innerHTML = '❤'.repeat(lives);
+        }
+
         function startGame() {
             const mode = document.getElementById('gameMode').value;
+            stakesEnabled = document.getElementById('stakesToggle').checked;
+            lives = 7;
+            streak = 0;
+            currentLevel = 1;
+            
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             if(mode === 'memory') {
                 document.getElementById('memoryScreen').classList.add('active');
@@ -236,37 +485,54 @@
                 resizeCanvas();
                 nextDrawing();
             }
+            updateLivesDisplay();
         }
-
-        let firstCard = null, secondCard = null, lock = false;
 
         function initMemory() {
             const board = document.getElementById('gameBoard');
             const isWord = document.getElementById('contentType').value === 'words';
-            const data = isWord ? combinationData : alphabet;
+            const data = isWord ? combinationData : currentAlphabet;
             const script = document.getElementById('scriptType').value;
             
             board.innerHTML = '';
-            const pairsCount = 3 + currentLevel;
-            const selected = [...data].sort(() => 0.5 - Math.random()).slice(0, Math.min(pairsCount, 10));
+            allFlippedOnce.clear();
+            firstCard = null;
+            secondCard = null;
+            lock = false;
+            
+            const pairsCount = Math.min(3 + currentLevel, 10);
+            const selected = [...data].sort(() => 0.5 - Math.random()).slice(0, pairsCount);
             
             let deck = [];
             selected.forEach(p => {
                 const matchKey = p.id || p.latin;
-                deck.push({ t: p[script], m: matchKey, isUy: false });
-                deck.push({ t: p.uyghur, m: matchKey, isUy: true });
+                const isOrkhon = targetScriptKey === 'orkhon';
+                
+                deck.push({ 
+                    t: p[script], 
+                    m: matchKey, 
+                    isUy: false, 
+                    isOrkhon: false 
+                });
+                deck.push({ 
+                    t: p[targetScriptKey], 
+                    m: matchKey, 
+                    isUy: targetScriptKey === 'uyghur', 
+                    isOrkhon: targetScriptKey === 'orkhon' 
+                });
             });
             deck.sort(() => 0.5 - Math.random());
 
             board.style.gridTemplateColumns = `repeat(${deck.length > 8 ? 4 : 3}, 1fr)`;
-            deck.forEach(item => {
+            deck.forEach((item, idx) => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.dataset.match = item.m;
+                card.dataset.idx = idx;
                 card.innerHTML = `
                     <div class="card-inner">
                         <div class="card-face card-front"></div>
-                        <div class="card-face card-back ${item.isUy ? 'is-uyghur' : ''}">${item.t}</div>
+                        <div class="card-face card-back ${item.isUy ? 'is-uyghur' : ''} ${item.isOrkhon ? 'is-orkhon' : ''}">${item.t}</div>
                     </div>`;
                 card.onclick = handleFlip;
                 board.appendChild(card);
@@ -276,30 +542,101 @@
 
         function handleFlip() {
             if(lock || this === firstCard || this.classList.contains('matched')) return;
+            
             this.classList.add('flipped');
-            if(!firstCard) { firstCard = this; return; }
-            secondCard = this; lock = true;
+            allFlippedOnce.add(this.dataset.idx);
+            
+            if(!firstCard) { 
+                firstCard = this; 
+                return; 
+            }
+            
+            secondCard = this; 
+            lock = true;
 
             if(firstCard.dataset.match === secondCard.dataset.match) {
-                firstCard.classList.add('matched'); secondCard.classList.add('matched');
-                firstCard = null; secondCard = null; lock = false;
-                if(document.querySelectorAll('.matched').length === document.querySelectorAll('.card').length) {
-                    setTimeout(() => { alert("LEVEL COMPLETE!"); currentLevel++; initMemory(); }, 500);
-                }
+                // MATCH - Change color
+                setTimeout(() => {
+                    firstCard.classList.add('matched'); 
+                    secondCard.classList.add('matched');
+                    firstCard = null; 
+                    secondCard = null; 
+                    lock = false;
+                    
+                    if(stakesEnabled) {
+                        streak++;
+                        if(streak === 2) {
+                            if(lives < 7) {
+                                lives++;
+                                updateLivesDisplay();
+                            }
+                            streak = 0;
+                        }
+                    }
+
+                    if(document.querySelectorAll('.matched').length === document.querySelectorAll('.card').length) {
+                        setTimeout(() => { 
+                            currentLevel++;
+                            alert("LEVEL CLEAR!"); 
+                            initMemory(); 
+                        }, 500);
+                    }
+                }, 300);
             } else {
-                setTimeout(() => { firstCard.classList.remove('flipped'); secondCard.classList.remove('flipped'); firstCard = null; secondCard = null; lock = false; }, 800);
+                // MISS - Only lose life if all cards have been seen
+                const totalCards = document.querySelectorAll('.card').length;
+                const allSeen = allFlippedOnce.size === totalCards;
+                
+                setTimeout(() => { 
+                    firstCard.classList.remove('flipped'); 
+                    secondCard.classList.remove('flipped'); 
+                    firstCard = null; 
+                    secondCard = null; 
+                    lock = false;
+                    
+                    // Only deduct life if all tiles have been checked at least once
+                    if(stakesEnabled && allSeen) {
+                        streak = 0;
+                        lives--;
+                        updateLivesDisplay();
+                        
+                        if(lives <= 0) {
+                            setTimeout(() => { 
+                                alert("GAME OVER! TRY AGAIN."); 
+                                currentLevel = 1;
+                                lives = 7;
+                                showMenu(); 
+                            }, 300);
+                            return;
+                        }
+                    }
+                }, 800);
             }
         }
 
+        // DRAWING LOGIC
         function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
         function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         function nextDrawing() {
             const isWord = document.getElementById('contentType').value === 'words';
-            const data = isWord ? combinationData : alphabet;
+            const data = isWord ? combinationData : currentAlphabet;
             const script = document.getElementById('scriptType').value;
             const item = data[Math.floor(Math.random() * data.length)];
+            
+            // Update target text
             document.getElementById('drawTarget').textContent = item[script];
-            document.getElementById('ghostText').textContent = item.uyghur;
+            
+            // Update ghost preview with the native script
+            const ghostLetter = document.getElementById('ghostLetter');
+            ghostLetter.textContent = item[targetScriptKey];
+            ghostLetter.className = 'ghost-preview';
+            
+            if (targetScriptKey === 'uyghur') {
+                ghostLetter.classList.add('is-uyghur');
+            } else if (targetScriptKey === 'orkhon') {
+                ghostLetter.classList.add('is-orkhon');
+            }
+            
             clearCanvas();
         }
 
@@ -313,12 +650,13 @@
         canvas.addEventListener('mousedown', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
         canvas.addEventListener('mousemove', (e) => { 
             if(!drawing) return; e.preventDefault(); const p = getPos(e); 
-            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = '#e9c46a';
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = '#dda15e';
             ctx.lineTo(p.x, p.y); ctx.stroke();
         });
         window.addEventListener('mouseup', () => drawing = false);
         canvas.addEventListener('touchstart', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive: false});
         canvas.addEventListener('touchmove', (e) => { if(!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, {passive: false});
+        canvas.addEventListener('touchend', () => drawing = false);
     </script>
 </body>
 </html>
