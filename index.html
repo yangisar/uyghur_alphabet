@@ -243,30 +243,28 @@
         .btn-menu { background: none; color: var(--accent-gold); border: 2px solid var(--accent-gold); font-size: 8px; padding: 5px 8px; }
         .btn-secondary { background: var(--bg-mid); box-shadow: 4px 4px 0 var(--bg-deep); }
         
-        /* Reference Sheet Button - Fixed position */
+        /* Reference Sheet Button - Above footer, smaller */
         .btn-reference {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
             background: var(--accent-gold);
             color: var(--bg-deep);
-            border: 3px solid var(--bg-deep);
-            font-size: 9px;
-            padding: 12px 15px;
+            border: 2px solid var(--bg-deep);
+            font-size: 7px;
+            padding: 8px 10px;
             cursor: pointer;
-            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
-            z-index: 500;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
             font-family: var(--pixel-font);
-            border-radius: 4px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
         }
         .btn-reference:hover {
             background: var(--accent-wheat);
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 0px rgba(0,0,0,0.5);
+            transform: translateY(-1px);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.4);
         }
         .btn-reference:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
         }
         
         /* Modal Overlay */
@@ -458,6 +456,7 @@
     </div>
 
     <footer>
+        <button class="btn-reference" onclick="toggleReference()">📋 ALPHABET REFERENCE</button><br>
         Created using AI tools by Yadykar Ibraimov<br>
         Follow 
         <a href="https://instagram.com/yangisar/" target="_blank">
@@ -465,9 +464,6 @@
             @yangisar
         </a>
     </footer>
-
-    <!-- Reference Sheet Button (always visible) -->
-    <button class="btn-reference" onclick="toggleReference()">📋 REFERENCE</button>
 
     <!-- Reference Sheet Modal -->
     <div id="referenceModal" class="modal-overlay">
