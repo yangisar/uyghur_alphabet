@@ -589,6 +589,52 @@
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
+        let currentBrushColor = '#dda15e'; // Default color
+
+        // Pleasant contrasting color palette for brush
+        const brushColors = [
+            '#e76f51', // Burnt Sienna
+            '#f4a261', // Sandy Brown
+            '#e9c46a', // Maize
+            '#2a9d8f', // Persian Green
+            '#264653', // Charcoal
+            '#e63946', // Red Salsa
+            '#f1faee', // Honeydew
+            '#a8dadc', // Powder Blue
+            '#457b9d', // Cerulean Blue
+            '#1d3557', // Prussian Blue
+            '#fb8500', // Orange (RYB)
+            '#ffb703', // Selective Yellow
+            '#8ecae6', // Baby Blue
+            '#219ebc', // Carolina Blue
+            '#023047', // Midnight Green
+            '#d62828', // Fire Engine Red
+            '#f77f00', // Orange Peel
+            '#fcbf49', // Maximum Yellow Red
+            '#eae2b7', // Dutch White
+            '#d4a373', // Tan
+            '#9d4edd', // Purple
+            '#c77dff', // Mauve
+            '#7209b7', // Purple (Munsell)
+            '#560bad', // Trypan Blue
+            '#3a0ca3', // Indigo
+            '#4361ee', // Ultramarine Blue
+            '#4cc9f0', // Vivid Sky Blue
+            '#06ffa5', // Spring Green
+            '#06d6a0', // Caribbean Green
+            '#118ab2', // Blue NCS
+            '#073b4c', // Rich Black
+            '#ffd60a'  // Cyber Yellow
+        ];
+
+        function getColorForLetter(text) {
+            // Generate consistent color based on letter
+            let hash = 0;
+            for (let i = 0; i < text.length; i++) {
+                hash = text.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return brushColors[Math.abs(hash) % brushColors.length];
+        }
 
         // PROGRESS SAVING
         function saveProgress() {
@@ -869,7 +915,11 @@
             const item = data[Math.floor(Math.random() * data.length)];
             
             // Update target text
-            document.getElementById('drawTarget').textContent = item[script];
+            const targetText = item[script];
+            document.getElementById('drawTarget').textContent = targetText;
+            
+            // Set new brush color based on the letter
+            currentBrushColor = getColorForLetter(targetText);
             
             // Update ghost preview with the native script
             const ghostLetter = document.getElementById('ghostLetter');
@@ -895,12 +945,21 @@
         canvas.addEventListener('mousedown', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
         canvas.addEventListener('mousemove', (e) => { 
             if(!drawing) return; e.preventDefault(); const p = getPos(e); 
-            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = '#dda15e';
+            ctx.lineWidth = 5; ctx.lineCap = 'round'; ctx.strokeStyle = currentBrushColor;
             ctx.lineTo(p.x, p.y); ctx.stroke();
         });
         window.addEventListener('mouseup', () => drawing = false);
         canvas.addEventListener('touchstart', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive: false});
-        canvas.addEventListener('touchmove', (e) => { if(!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, {passive: false});
+        canvas.addEventListener('touchmove', (e) => { 
+            if(!drawing) return; 
+            e.preventDefault(); 
+            const p = getPos(e); 
+            ctx.lineWidth = 5; 
+            ctx.lineCap = 'round'; 
+            ctx.strokeStyle = currentBrushColor;
+            ctx.lineTo(p.x, p.y); 
+            ctx.stroke(); 
+        }, {passive: false});
         canvas.addEventListener('touchend', () => drawing = false);
 
         // Load saved progress on page load
