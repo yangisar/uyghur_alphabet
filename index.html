@@ -242,6 +242,135 @@
         .btn:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #5e3412; }
         .btn-menu { background: none; color: var(--accent-gold); border: 2px solid var(--accent-gold); font-size: 8px; padding: 5px 8px; }
         .btn-secondary { background: var(--bg-mid); box-shadow: 4px 4px 0 var(--bg-deep); }
+        
+        /* Reference Sheet Button - Fixed position */
+        .btn-reference {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-gold);
+            color: var(--bg-deep);
+            border: 3px solid var(--bg-deep);
+            font-size: 9px;
+            padding: 12px 15px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.5);
+            z-index: 500;
+            font-family: var(--pixel-font);
+            border-radius: 4px;
+        }
+        .btn-reference:hover {
+            background: var(--accent-wheat);
+            transform: translateY(-2px);
+            box-shadow: 6px 6px 0px rgba(0,0,0,0.5);
+        }
+        .btn-reference:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+        }
+        
+        /* Modal Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        /* Reference Sheet Modal */
+        .reference-modal {
+            background: var(--bg-deep);
+            border: 4px solid var(--accent-gold);
+            padding: 25px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .reference-modal h2 {
+            font-size: 12px;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .reference-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .reference-table th {
+            background: var(--bg-mid);
+            color: var(--accent-wheat);
+            padding: 10px 8px;
+            font-size: 8px;
+            border: 2px solid var(--bg-deep);
+            text-align: center;
+        }
+        
+        .reference-table td {
+            padding: 12px 8px;
+            border: 2px solid var(--bg-mid);
+            text-align: center;
+            font-size: 10px;
+            color: var(--accent-wheat);
+        }
+        
+        .reference-table tr:nth-child(even) {
+            background: rgba(0,0,0,0.2);
+        }
+        
+        .reference-table .native-script {
+            font-size: 24px;
+        }
+        
+        .reference-table .uyghur-cell {
+            font-family: "Microsoft Uighur", serif;
+            text-transform: none;
+        }
+        
+        .reference-table .orkhon-cell {
+            font-family: "Segoe UI Historic", "Noto Sans Old Turkic", serif;
+            text-transform: none;
+        }
+        
+        .modal-close {
+            background: var(--accent-clay);
+            color: var(--accent-wheat);
+            border: none;
+            padding: 12px;
+            font-family: var(--pixel-font);
+            font-size: 9px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 4px 4px 0px #5e3412;
+        }
+        
+        .modal-close:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #5e3412;
+        }
+        
+        /* Progress indicator */
+        .progress-badge {
+            display: inline-block;
+            background: var(--accent-clay);
+            color: var(--accent-wheat);
+            padding: 8px 12px;
+            font-size: 8px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -249,6 +378,7 @@
     <!-- MAIN SCREEN: Choose Script Type -->
     <div id="mainScreen" class="screen active">
         <h1>Uyghur and Old Turkic<br>Alphabet Practice Game</h1>
+        <div id="savedProgress" class="progress-badge" style="display:none;"></div>
         <h2>Choose Your Script</h2>
         
         <div class="script-choice">
@@ -335,6 +465,20 @@
             @yangisar
         </a>
     </footer>
+
+    <!-- Reference Sheet Button (always visible) -->
+    <button class="btn-reference" onclick="toggleReference()">📋 REFERENCE</button>
+
+    <!-- Reference Sheet Modal -->
+    <div id="referenceModal" class="modal-overlay">
+        <div class="reference-modal">
+            <h2>Alphabet Reference Sheet</h2>
+            <table class="reference-table" id="referenceTable">
+                <!-- Generated by JavaScript -->
+            </table>
+            <button class="modal-close" onclick="toggleReference()">CLOSE</button>
+        </div>
+    </div>
 
     <script>
         // Alphabet data for both scripts
@@ -433,6 +577,91 @@
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
+
+        // PROGRESS SAVING
+        function saveProgress() {
+            const progress = {
+                level: currentLevel,
+                lives: lives,
+                scriptType: selectedScriptType,
+                stakesEnabled: stakesEnabled,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('turkicAlphabetProgress', JSON.stringify(progress));
+            updateProgressDisplay();
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('turkicAlphabetProgress');
+            if (saved) {
+                try {
+                    const progress = JSON.parse(saved);
+                    currentLevel = progress.level || 1;
+                    lives = progress.lives || 7;
+                    // Display on main screen
+                    updateProgressDisplay();
+                } catch (e) {
+                    console.error('Failed to load progress:', e);
+                }
+            }
+        }
+
+        function updateProgressDisplay() {
+            const badge = document.getElementById('savedProgress');
+            if (currentLevel > 1) {
+                badge.textContent = `💾 SAVED: LEVEL ${currentLevel} | ❤ ${lives}`;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // REFERENCE SHEET
+        function toggleReference() {
+            const modal = document.getElementById('referenceModal');
+            modal.classList.toggle('active');
+            if (modal.classList.contains('active')) {
+                generateReferenceTable();
+            }
+        }
+
+        function generateReferenceTable() {
+            const table = document.getElementById('referenceTable');
+            let html = `
+                <thead>
+                    <tr>
+                        <th>LATIN</th>
+                        <th>CYRILLIC</th>
+                        <th>UYGHUR<br>PERSO-ARABIC</th>
+                        <th>OLD TURKIC<br>ORKHON</th>
+                    </tr>
+                </thead>
+                <tbody>
+            `;
+
+            // Use Uyghur alphabet as base (has all letters)
+            uyghurAlphabet.forEach((letter, idx) => {
+                const orkhon = orkhonAlphabet[idx];
+                html += `
+                    <tr>
+                        <td>${letter.latin}</td>
+                        <td>${letter.cyrillic}</td>
+                        <td class="native-script uyghur-cell">${letter.uyghur}</td>
+                        <td class="native-script orkhon-cell">${orkhon.orkhon}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('referenceModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleReference();
+            }
+        });
 
         function selectScript(scriptType) {
             selectedScriptType = scriptType;
@@ -569,6 +798,7 @@
                             if(lives < 7) {
                                 lives++;
                                 updateLivesDisplay();
+                                saveProgress();
                             }
                             streak = 0;
                         }
@@ -577,6 +807,7 @@
                     if(document.querySelectorAll('.matched').length === document.querySelectorAll('.card').length) {
                         setTimeout(() => { 
                             currentLevel++;
+                            saveProgress();
                             alert("LEVEL CLEAR!"); 
                             initMemory(); 
                         }, 500);
@@ -599,12 +830,14 @@
                         streak = 0;
                         lives--;
                         updateLivesDisplay();
+                        saveProgress();
                         
                         if(lives <= 0) {
                             setTimeout(() => { 
                                 alert("GAME OVER! TRY AGAIN."); 
                                 currentLevel = 1;
                                 lives = 7;
+                                saveProgress();
                                 showMenu(); 
                             }, 300);
                             return;
@@ -657,6 +890,9 @@
         canvas.addEventListener('touchstart', (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, {passive: false});
         canvas.addEventListener('touchmove', (e) => { if(!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, {passive: false});
         canvas.addEventListener('touchend', () => drawing = false);
+
+        // Load saved progress on page load
+        loadProgress();
     </script>
 </body>
 </html>
