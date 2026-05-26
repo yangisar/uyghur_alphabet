@@ -1,9 +1,12 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Uyghur and Old Turkic Alphabet Practice Game</title>
+    <title>5 Writing Systems Learning Game - Alphabet Practice</title>
+    <meta name="description" content="Learn 5 writing systems: Uyghur, Old Turkic, Devanagari, Georgian, Katakana. Interactive memory matching and tracing practice.">
+    <meta name="keywords" content="alphabet learning, writing systems, Uyghur, Old Turkic, Devanagari, Georgian, Katakana, script practice, language learning">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -194,6 +197,13 @@
 
         .is-uyghur { font-family: "Microsoft Uighur", serif; font-size: 48px; text-transform: none; }
         .is-orkhon { font-family: "Segoe UI Historic", "Noto Sans Old Turkic", serif; font-size: 36px; text-transform: none; }
+        .is-devanagari { font-family: "Noto Sans Devanagari", "Mangal", serif; font-size: 42px; text-transform: none; }
+        .is-georgian { font-family: "Noto Sans Georgian", "Sylfaen", serif; font-size: 42px; text-transform: none; }
+        .is-katakana { font-family: "Noto Sans JP", "MS Gothic", serif; font-size: 42px; text-transform: none; }
+        
+        .script-sample.devanagari { font-family: "Noto Sans Devanagari", "Mangal", serif; text-transform: none; }
+        .script-sample.georgian { font-family: "Noto Sans Georgian", "Sylfaen", serif; text-transform: none; }
+        .script-sample.katakana { font-family: "Noto Sans JP", "MS Gothic", serif; text-transform: none; }
 
         /* Drawing Pad */
         .draw-container { 
@@ -256,6 +266,7 @@
             border-radius: 3px;
             display: inline-block;
             margin-bottom: 8px;
+            margin-right: 8px;
         }
         .btn-reference:hover {
             background: var(--accent-wheat);
@@ -263,6 +274,29 @@
             box-shadow: 4px 4px 0px rgba(0,0,0,0.4);
         }
         .btn-reference:active {
+            transform: translate(1px, 1px);
+            box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+        }
+        
+        .btn-readme {
+            background: var(--accent-clay);
+            color: var(--accent-wheat);
+            border: 2px solid var(--bg-deep);
+            font-size: 7px;
+            padding: 8px 10px;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+            font-family: var(--pixel-font);
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+        .btn-readme:hover {
+            background: #a85a1f;
+            transform: translateY(-1px);
+            box-shadow: 4px 4px 0px rgba(0,0,0,0.4);
+        }
+        .btn-readme:active {
             transform: translate(1px, 1px);
             box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
         }
@@ -342,6 +376,21 @@
             text-transform: none;
         }
         
+        .reference-table .devanagari-cell {
+            font-family: "Noto Sans Devanagari", "Mangal", serif;
+            text-transform: none;
+        }
+        
+        .reference-table .georgian-cell {
+            font-family: "Noto Sans Georgian", "Sylfaen", serif;
+            text-transform: none;
+        }
+        
+        .reference-table .katakana-cell {
+            font-family: "Noto Sans JP", "MS Gothic", serif;
+            text-transform: none;
+        }
+        
         .modal-close {
             background: var(--accent-clay);
             color: var(--accent-wheat);
@@ -359,6 +408,71 @@
             box-shadow: 2px 2px 0px #5e3412;
         }
         
+        /* README Modal specific styling */
+        .readme-modal {
+            background: var(--bg-deep);
+            border: 4px solid var(--accent-gold);
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .readme-modal h2 {
+            font-size: 14px;
+            color: var(--accent-gold);
+            margin-bottom: 25px;
+            text-align: center;
+            line-height: 1.6;
+        }
+        
+        .readme-modal h3 {
+            font-size: 10px;
+            color: var(--accent-wheat);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid var(--bg-mid);
+            padding-bottom: 8px;
+        }
+        
+        .readme-modal p, .readme-modal ul {
+            font-size: 8px;
+            line-height: 1.8;
+            color: var(--accent-wheat);
+            margin-bottom: 15px;
+            text-transform: none;
+        }
+        
+        .readme-modal ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .readme-modal li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .readme-modal li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: var(--accent-gold);
+        }
+        
+        .readme-modal strong {
+            color: var(--accent-gold);
+        }
+        
+        .readme-modal a {
+            color: var(--accent-clay);
+            text-decoration: underline;
+        }
+        
         /* Progress indicator */
         .progress-badge {
             display: inline-block;
@@ -373,28 +487,44 @@
 </head>
 <body>
 
-    <!-- MAIN SCREEN: Choose Script Type -->
     <div id="mainScreen" class="screen active">
-        <h1>Uyghur and Old Turkic<br>Alphabet Practice Game</h1>
+        <h1>Script Learning Game<br>5 Writing Systems</h1>
         <div id="savedProgress" class="progress-badge" style="display:none;"></div>
         <h2>Choose Your Script</h2>
         
         <div class="script-choice">
             <div class="script-card" onclick="selectScript('uyghur')">
-                <div class="script-title">Uyghur Kona Yëziq</div>
-                <div class="script-sample uyghur">ئۇيغۇر يېزىقى</div>
-                <div class="script-desc">Perso-Arabic Script</div>
+                <div class="script-title">Uyghur</div>
+                <div class="script-sample uyghur">ئۇيغۇر</div>
+                <div class="script-desc">Perso-Arabic</div>
             </div>
 
             <div class="script-card" onclick="selectScript('orkhon')">
-                <div class="script-title">Göktürk, Orkhon,<br>Orkhon-Yenisey Script</div>
+                <div class="script-title">Old Turkic</div>
                 <div class="script-sample orkhon">𐱅𐰇𐰼𐰜</div>
-                <div class="script-desc">Old Turkic Script</div>
+                <div class="script-desc">Orkhon Runes</div>
+            </div>
+
+            <div class="script-card" onclick="selectScript('devanagari')">
+                <div class="script-title">Devanagari</div>
+                <div class="script-sample devanagari">देवनागरी</div>
+                <div class="script-desc">Hindi/Sanskrit</div>
+            </div>
+
+            <div class="script-card" onclick="selectScript('georgian')">
+                <div class="script-title">Georgian</div>
+                <div class="script-sample georgian">ქართული</div>
+                <div class="script-desc">Mkhedruli</div>
+            </div>
+
+            <div class="script-card" onclick="selectScript('katakana')">
+                <div class="script-title">Katakana</div>
+                <div class="script-sample katakana">カタカナ</div>
+                <div class="script-desc">Japanese</div>
             </div>
         </div>
     </div>
 
-    <!-- OPTIONS SCREEN -->
     <div id="setupScreen" class="screen">
         <h1 id="scriptHeader">Practice Options</h1>
         <div class="menu-card">
@@ -431,7 +561,6 @@
         </div>
     </div>
 
-    <!-- MEMORY GAME SCREEN -->
     <div id="memoryScreen" class="screen">
         <div class="hud">
             <span id="lvlDisplay">LVL: 01</span>
@@ -441,7 +570,6 @@
         <div id="gameBoard" class="game-board"></div>
     </div>
 
-    <!-- DRAWING SCREEN -->
     <div id="drawScreen" class="screen">
         <div class="hud">
             <h2 id="drawTarget" style="font-size:14px; color:var(--accent-gold); margin:0;">A</h2>
@@ -456,7 +584,8 @@
     </div>
 
     <footer>
-        <button class="btn-reference" onclick="toggleReference()">📋 ALPHABET REFERENCE</button><br>
+        <button class="btn-reference" onclick="toggleReference()">📋 ALPHABET REFERENCE</button>
+        <button class="btn-readme" onclick="toggleReadme()">📖 README</button><br>
         Created using AI tools by Yadykar Ibraimov<br>
         Follow 
         <a href="https://instagram.com/yangisar/" target="_blank">
@@ -465,19 +594,66 @@
         </a>
     </footer>
 
-    <!-- Reference Sheet Modal -->
     <div id="referenceModal" class="modal-overlay">
         <div class="reference-modal">
             <h2>Alphabet Reference Sheet</h2>
             <table class="reference-table" id="referenceTable">
-                <!-- Generated by JavaScript -->
-            </table>
+                </table>
             <button class="modal-close" onclick="toggleReference()">CLOSE</button>
         </div>
     </div>
 
+    <div id="readmeModal" class="modal-overlay">
+        <div class="readme-modal">
+            <h2>Alphabet Practice Game</h2>
+            
+            <h3>🎮 About This Game</h3>
+            <p>An interactive educational game designed to help you learn 5 distinct writing systems that feature the vowels A, E, I, O, U: <strong>Uyghur Perso-Arabic script</strong>, <strong>Old Turkic runes</strong>, <strong>Devanagari</strong>, <strong>Georgian Mkhedruli</strong>, and <strong>Katakana</strong>. Master these beautiful alphabets through memory matching games and tracing exercises.</p>
+
+            <h3>📚 Writing Systems Included</h3>
+            <ul>
+                <li><strong>Uyghur Kona Yëziq</strong> - The traditional Perso-Arabic script used by Uyghur people in Central Asia.</li>
+                <li><strong>Old Turkic (Orkhon) Script</strong> - Ancient runic alphabet used by Göktürk, Uyghur, and other Turkic peoples.</li>
+                <li><strong>Devanagari</strong> - Widely used script in India and Nepal for languages like Hindi and Sanskrit.</li>
+                <li><strong>Georgian Mkhedruli</strong> - The elegant modern script of the Georgian language.</li>
+                <li><strong>Katakana</strong> - A Japanese syllabary used primarily for loanwords and emphasis.</li>
+            </ul>
+
+            <h3>🎯 Game Modes</h3>
+            <ul>
+                <li><strong>Memory Match</strong> - Flip cards to match letters in native script with their equivalents. Test your recognition and memory skills.</li>
+                <li><strong>Trace Draw</strong> - Practice writing letters by tracing over ghost previews. Each letter gets a unique brush color. Improve your calligraphy and muscle memory.</li>
+            </ul>
+
+            <h3>⚙️ Features</h3>
+            <ul>
+                <li><strong>Progress Saving</strong> - Your level and lives are automatically saved in your browser</li>
+                <li><strong>Stakes Mode</strong> - Enable 7 lives for challenge mode. Gain lives by matching 2 pairs in a row. Lose lives only after viewing all cards.</li>
+                <li><strong>Alphabet Reference</strong> - Quick reference table showing all letter equivalents across scripts</li>
+                <li><strong>Responsive Design</strong> - Works on desktop, tablet, and mobile devices</li>
+                <li><strong>Multiple Content Types</strong> - Practice single letters or letter combinations</li>
+            </ul>
+
+            <h3>💡 Tips for Learning</h3>
+            <ul>
+                <li>Start with single letters before moving to combinations</li>
+                <li>Use the reference sheet frequently at first</li>
+                <li>Practice writing in Trace Draw mode to build muscle memory</li>
+                <li>Enable Stakes mode once you're comfortable for extra challenge</li>
+                <li>Regular short practice sessions are more effective than long cramming</li>
+            </ul>
+
+            <h3>👨‍💻 Technical Details</h3>
+            <p>Built with pure HTML5, CSS3, and JavaScript. No external dependencies except fonts. Uses localStorage for progress persistence. Fully responsive design with touch support for mobile devices.</p>
+
+            <h3>🤝 Credits</h3>
+            <p>Created using AI tools by <strong>Yadykar Ibraimov</strong>. Follow <a href="https://instagram.com/yangisar/" target="_blank">@yangisar</a> on Instagram for updates.</p>
+
+            <button class="modal-close" onclick="toggleReadme()">CLOSE</button>
+        </div>
+    </div>
+
     <script>
-        // Alphabet data for both scripts - COMPLETE 32 LETTERS
         const uyghurAlphabet = [
             { latin: "A", cyrillic: "А", uyghur: "ئا" }, 
             { latin: "E", cyrillic: "Ә", uyghur: "ئە" },
@@ -548,29 +724,178 @@
             { latin: "Y", cyrillic: "Й", orkhon: "𐰖" }
         ];
 
-        let selectedScriptType = 'uyghur'; // 'uyghur' or 'orkhon'
+        const devanagariAlphabet = [
+            { latin: "A", devanagari: "अ" },
+            { latin: "Aa", devanagari: "आ" },
+            { latin: "I", devanagari: "इ" },
+            { latin: "Ii", devanagari: "ई" },
+            { latin: "U", devanagari: "उ" },
+            { latin: "Uu", devanagari: "ऊ" },
+            { latin: "E", devanagari: "ए" },
+            { latin: "Ai", devanagari: "ऐ" },
+            { latin: "O", devanagari: "ओ" },
+            { latin: "Au", devanagari: "औ" },
+            { latin: "Ka", devanagari: "क" },
+            { latin: "Kha", devanagari: "ख" },
+            { latin: "Ga", devanagari: "ग" },
+            { latin: "Gha", devanagari: "घ" },
+            { latin: "Nga", devanagari: "ङ" },
+            { latin: "Ca", devanagari: "च" },
+            { latin: "Cha", devanagari: "छ" },
+            { latin: "Ja", devanagari: "ज" },
+            { latin: "Jha", devanagari: "झ" },
+            { latin: "Nya", devanagari: "ञ" },
+            { latin: "Ta", devanagari: "ट" },
+            { latin: "Tha", devanagari: "ठ" },
+            { latin: "Da", devanagari: "ड" },
+            { latin: "Dha", devanagari: "ढ" },
+            { latin: "Na", devanagari: "ण" },
+            { latin: "Ta", devanagari: "त" },
+            { latin: "Tha", devanagari: "थ" },
+            { latin: "Da", devanagari: "द" },
+            { latin: "Dha", devanagari: "ध" },
+            { latin: "Na", devanagari: "न" },
+            { latin: "Pa", devanagari: "प" },
+            { latin: "Pha", devanagari: "फ" },
+            { latin: "Ba", devanagari: "ब" },
+            { latin: "Bha", devanagari: "भ" },
+            { latin: "Ma", devanagari: "म" },
+            { latin: "Ya", devanagari: "य" },
+            { latin: "Ra", devanagari: "र" },
+            { latin: "La", devanagari: "ल" },
+            { latin: "Va", devanagari: "व" },
+            { latin: "Sha", devanagari: "श" },
+            { latin: "Ssa", devanagari: "ष" },
+            { latin: "Sa", devanagari: "स" },
+            { latin: "Ha", devanagari: "ह" }
+        ];
+
+        const georgianAlphabet = [
+            { latin: "A", georgian: "ა" },
+            { latin: "B", georgian: "ბ" },
+            { latin: "G", georgian: "გ" },
+            { latin: "D", georgian: "დ" },
+            { latin: "E", georgian: "ე" },
+            { latin: "V", georgian: "ვ" },
+            { latin: "Z", georgian: "ზ" },
+            { latin: "T", georgian: "თ" },
+            { latin: "I", georgian: "ი" },
+            { latin: "K", georgian: "კ" },
+            { latin: "L", georgian: "ლ" },
+            { latin: "M", georgian: "მ" },
+            { latin: "N", georgian: "ნ" },
+            { latin: "O", georgian: "ო" },
+            { latin: "P", georgian: "პ" },
+            { latin: "Zh", georgian: "ჟ" },
+            { latin: "R", georgian: "რ" },
+            { latin: "S", georgian: "ს" },
+            { latin: "T'", georgian: "ტ" },
+            { latin: "U", georgian: "უ" },
+            { latin: "P'", georgian: "ფ" },
+            { latin: "K'", georgian: "ქ" },
+            { latin: "Gh", georgian: "ღ" },
+            { latin: "Q", georgian: "ყ" },
+            { latin: "Sh", georgian: "შ" },
+            { latin: "Ch", georgian: "ჩ" },
+            { latin: "Ts", georgian: "ც" },
+            { latin: "Dz", georgian: "ძ" },
+            { latin: "Ts'", georgian: "წ" },
+            { latin: "Ch'", georgian: "ჭ" },
+            { latin: "Kh", georgian: "ხ" },
+            { latin: "J", georgian: "ჯ" },
+            { latin: "H", georgian: "ჰ" }
+        ];
+
+        const katakanaAlphabet = [
+            { latin: "A", katakana: "ア" },
+            { latin: "I", katakana: "イ" },
+            { latin: "U", katakana: "ウ" },
+            { latin: "E", katakana: "エ" },
+            { latin: "O", katakana: "オ" },
+            { latin: "Ka", katakana: "カ" },
+            { latin: "Ki", katakana: "キ" },
+            { latin: "Ku", katakana: "ク" },
+            { latin: "Ke", katakana: "ケ" },
+            { latin: "Ko", katakana: "コ" },
+            { latin: "Sa", katakana: "サ" },
+            { latin: "Shi", katakana: "シ" },
+            { latin: "Su", katakana: "ス" },
+            { latin: "Se", katakana: "セ" },
+            { latin: "So", katakana: "ソ" },
+            { latin: "Ta", katakana: "タ" },
+            { latin: "Chi", katakana: "チ" },
+            { latin: "Tsu", katakana: "ツ" },
+            { latin: "Te", katakana: "テ" },
+            { latin: "To", katakana: "ト" },
+            { latin: "Na", katakana: "ナ" },
+            { latin: "Ni", katakana: "ニ" },
+            { latin: "Nu", katakana: "ヌ" },
+            { latin: "Ne", katakana: "ネ" },
+            { latin: "No", katakana: "ノ" },
+            { latin: "Ha", katakana: "ハ" },
+            { latin: "Hi", katakana: "ヒ" },
+            { latin: "Fu", katakana: "フ" },
+            { latin: "He", katakana: "ヘ" },
+            { latin: "Ho", katakana: "ホ" },
+            { latin: "Ma", katakana: "マ" },
+            { latin: "Mi", katakana: "ミ" },
+            { latin: "Mu", katakana: "ム" },
+            { latin: "Me", katakana: "メ" },
+            { latin: "Mo", katakana: "モ" },
+            { latin: "Ya", katakana: "ヤ" },
+            { latin: "Yu", katakana: "ユ" },
+            { latin: "Yo", katakana: "ヨ" },
+            { latin: "Ra", katakana: "ラ" },
+            { latin: "Ri", katakana: "リ" },
+            { latin: "Ru", katakana: "ル" },
+            { latin: "Re", katakana: "レ" },
+            { latin: "Ro", katakana: "ロ" },
+            { latin: "Wa", katakana: "ワ" },
+            { latin: "Wo", katakana: "ヲ" },
+            { latin: "N", katakana: "ン" }
+        ];
+
+        let selectedScriptType = 'uyghur';
         let currentAlphabet = uyghurAlphabet;
-        let targetScriptKey = 'uyghur'; // What script to match against
+        let targetScriptKey = 'uyghur';
 
         function getCombinations(alphabet, scriptKey) {
             let combos = [];
-            const vowels = alphabet.filter(l => "AEIOU".includes(l.latin));
-            const cons = alphabet.filter(l => !"AEIOU".includes(l.latin));
+            const vowels = alphabet.filter(l => l.latin.length <= 2 && "AEIOU".includes(l.latin[0]));
+            const cons  = alphabet.filter(l => !("AEIOU".includes(l.latin[0])));
+
+            if (vowels.length === 0 || cons.length === 0) {
+                for (let i = 0; i < 100; i++) {
+                    const item = alphabet[i % alphabet.length];
+                    combos.push({ ...item, id: "combo_" + i });
+                }
+                return combos;
+            }
+
             for(let i=0; i<100; i++) {
                 let c1 = cons[i % cons.length];
-                let v = vowels[Math.floor(i / 5) % vowels.length];
+                let v  = vowels[Math.floor(i / 5) % vowels.length];
                 let c2 = cons[(i + 7) % cons.length];
                 
                 let combo = {
                     latin: c1.latin + v.latin.toLowerCase() + c2.latin.toLowerCase(),
-                    cyrillic: c1.cyrillic + v.cyrillic.toLowerCase() + c2.cyrillic.toLowerCase(),
                     id: "combo_" + i
                 };
                 
-                if (scriptKey === 'uyghur') {
+                if (c1.cyrillic && v.cyrillic && c2.cyrillic) {
+                    combo.cyrillic = c1.cyrillic + v.cyrillic.toLowerCase() + c2.cyrillic.toLowerCase();
+                }
+                
+                if (scriptKey === 'uyghur' && c1.uyghur && v.uyghur && c2.uyghur) {
                     combo.uyghur = c1.uyghur + v.uyghur.replace('ئ', '') + c2.uyghur.replace('ئ', '');
-                } else {
+                } else if (scriptKey === 'orkhon' && c1.orkhon && v.orkhon && c2.orkhon) {
                     combo.orkhon = c1.orkhon + v.orkhon + c2.orkhon;
+                } else if (scriptKey === 'devanagari' && c1.devanagari && v.devanagari && c2.devanagari) {
+                    combo.devanagari = c1.devanagari + v.devanagari + c2.devanagari;
+                } else if (scriptKey === 'georgian' && c1.georgian && v.georgian && c2.georgian) {
+                    combo.georgian = c1.georgian + v.georgian + c2.georgian;
+                } else if (scriptKey === 'katakana' && c1.katakana && v.katakana && c2.katakana) {
+                    combo.katakana = c1.katakana + v.katakana + c2.katakana;
                 }
                 
                 combos.push(combo);
@@ -589,46 +914,18 @@
         const canvas = document.getElementById('drawCanvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
-        let currentBrushColor = '#dda15e'; // Default color
+        let currentBrushColor = '#dda15e'; 
 
-        // Pleasant contrasting color palette for brush
         const brushColors = [
-            '#e76f51', // Burnt Sienna
-            '#f4a261', // Sandy Brown
-            '#e9c46a', // Maize
-            '#2a9d8f', // Persian Green
-            '#264653', // Charcoal
-            '#e63946', // Red Salsa
-            '#f1faee', // Honeydew
-            '#a8dadc', // Powder Blue
-            '#457b9d', // Cerulean Blue
-            '#1d3557', // Prussian Blue
-            '#fb8500', // Orange (RYB)
-            '#ffb703', // Selective Yellow
-            '#8ecae6', // Baby Blue
-            '#219ebc', // Carolina Blue
-            '#023047', // Midnight Green
-            '#d62828', // Fire Engine Red
-            '#f77f00', // Orange Peel
-            '#fcbf49', // Maximum Yellow Red
-            '#eae2b7', // Dutch White
-            '#d4a373', // Tan
-            '#9d4edd', // Purple
-            '#c77dff', // Mauve
-            '#7209b7', // Purple (Munsell)
-            '#560bad', // Trypan Blue
-            '#3a0ca3', // Indigo
-            '#4361ee', // Ultramarine Blue
-            '#4cc9f0', // Vivid Sky Blue
-            '#06ffa5', // Spring Green
-            '#06d6a0', // Caribbean Green
-            '#118ab2', // Blue NCS
-            '#073b4c', // Rich Black
-            '#ffd60a'  // Cyber Yellow
+            '#e76f51', '#f4a261', '#e9c46a', '#2a9d8f', '#264653', '#e63946',
+            '#f1faee', '#a8dadc', '#457b9d', '#1d3557', '#fb8500', '#ffb703',
+            '#8ecae6', '#219ebc', '#023047', '#d62828', '#f77f00', '#fcbf49',
+            '#eae2b7', '#d4a373', '#9d4edd', '#c77dff', '#7209b7', '#560bad',
+            '#3a0ca3', '#4361ee', '#4cc9f0', '#06ffa5', '#06d6a0', '#118ab2',
+            '#073b4c', '#ffd60a'
         ];
 
         function getColorForLetter(text) {
-            // Generate consistent color based on letter
             let hash = 0;
             for (let i = 0; i < text.length; i++) {
                 hash = text.charCodeAt(i) + ((hash << 5) - hash);
@@ -636,7 +933,6 @@
             return brushColors[Math.abs(hash) % brushColors.length];
         }
 
-        // PROGRESS SAVING
         function saveProgress() {
             const progress = {
                 level: currentLevel,
@@ -645,18 +941,17 @@
                 stakesEnabled: stakesEnabled,
                 timestamp: Date.now()
             };
-            localStorage.setItem('turkicAlphabetProgress', JSON.stringify(progress));
+            localStorage.setItem('alphabetProgress', JSON.stringify(progress));
             updateProgressDisplay();
         }
 
         function loadProgress() {
-            const saved = localStorage.getItem('turkicAlphabetProgress');
+            const saved = localStorage.getItem('alphabetProgress');
             if (saved) {
                 try {
                     const progress = JSON.parse(saved);
                     currentLevel = progress.level || 1;
                     lives = progress.lives || 7;
-                    // Display on main screen
                     updateProgressDisplay();
                 } catch (e) {
                     console.error('Failed to load progress:', e);
@@ -674,7 +969,6 @@
             }
         }
 
-        // REFERENCE SHEET
         function toggleReference() {
             const modal = document.getElementById('referenceModal');
             modal.classList.toggle('active');
@@ -685,39 +979,63 @@
 
         function generateReferenceTable() {
             const table = document.getElementById('referenceTable');
-            let html = `
-                <thead>
-                    <tr>
-                        <th>LATIN</th>
-                        <th>CYRILLIC</th>
-                        <th>UYGHUR<br>PERSO-ARABIC</th>
-                        <th>OLD TURKIC<br>ORKHON</th>
-                    </tr>
-                </thead>
-                <tbody>
-            `;
+            
+            let html = `<thead><tr>`;
+            
+            if (selectedScriptType === 'uyghur') {
+                html += `<th>LATIN</th><th>CYRILLIC</th><th>UYGHUR</th>`;
+            } else if (selectedScriptType === 'orkhon') {
+                html += `<th>LATIN</th><th>CYRILLIC</th><th>ORKHON</th>`;
+            } else if (selectedScriptType === 'devanagari') {
+                html += `<th>LATIN</th><th>DEVANAGARI</th>`;
+            } else if (selectedScriptType === 'georgian') {
+                html += `<th>LATIN</th><th>GEORGIAN</th>`;
+            } else if (selectedScriptType === 'katakana') {
+                html += `<th>LATIN</th><th>KATAKANA</th>`;
+            }
+            
+            html += `</tr></thead><tbody>`;
 
-            // Use Uyghur alphabet as base (has all letters)
-            uyghurAlphabet.forEach((letter, idx) => {
-                const orkhon = orkhonAlphabet[idx];
-                html += `
-                    <tr>
-                        <td>${letter.latin}</td>
-                        <td>${letter.cyrillic}</td>
-                        <td class="native-script uyghur-cell">${letter.uyghur}</td>
-                        <td class="native-script orkhon-cell">${orkhon.orkhon}</td>
-                    </tr>
-                `;
-            });
+            if (selectedScriptType === 'uyghur') {
+                uyghurAlphabet.forEach((letter) => {
+                    html += `<tr><td>${letter.latin}</td><td>${letter.cyrillic}</td><td class="native-script uyghur-cell">${letter.uyghur}</td></tr>`;
+                });
+            } else if (selectedScriptType === 'orkhon') {
+                orkhonAlphabet.forEach((letter) => {
+                    html += `<tr><td>${letter.latin}</td><td>${letter.cyrillic}</td><td class="native-script orkhon-cell">${letter.orkhon}</td></tr>`;
+                });
+            } else if (selectedScriptType === 'devanagari') {
+                devanagariAlphabet.forEach((letter) => {
+                    html += `<tr><td>${letter.latin}</td><td class="native-script devanagari-cell">${letter.devanagari}</td></tr>`;
+                });
+            } else if (selectedScriptType === 'georgian') {
+                georgianAlphabet.forEach((letter) => {
+                    html += `<tr><td>${letter.latin}</td><td class="native-script georgian-cell">${letter.georgian}</td></tr>`;
+                });
+            } else if (selectedScriptType === 'katakana') {
+                katakanaAlphabet.forEach((letter) => {
+                    html += `<tr><td>${letter.latin}</td><td class="native-script katakana-cell">${letter.katakana}</td></tr>`;
+                });
+            }
 
             html += '</tbody>';
             table.innerHTML = html;
         }
 
-        // Close modal when clicking outside
         document.getElementById('referenceModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 toggleReference();
+            }
+        });
+
+        function toggleReadme() {
+            const modal = document.getElementById('readmeModal');
+            modal.classList.toggle('active');
+        }
+
+        document.getElementById('readmeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleReadme();
             }
         });
 
@@ -728,10 +1046,22 @@
                 currentAlphabet = uyghurAlphabet;
                 targetScriptKey = 'uyghur';
                 document.getElementById('scriptHeader').textContent = 'Uyghur Kona Yëziq';
-            } else {
+            } else if (scriptType === 'orkhon') {
                 currentAlphabet = orkhonAlphabet;
                 targetScriptKey = 'orkhon';
-                document.getElementById('scriptHeader').textContent = 'Turkic Orkhon';
+                document.getElementById('scriptHeader').textContent = 'Old Turkic Orkhon';
+            } else if (scriptType === 'devanagari') {
+                currentAlphabet = devanagariAlphabet;
+                targetScriptKey = 'devanagari';
+                document.getElementById('scriptHeader').textContent = 'Devanagari Script';
+            } else if (scriptType === 'georgian') {
+                currentAlphabet = georgianAlphabet;
+                targetScriptKey = 'georgian';
+                document.getElementById('scriptHeader').textContent = 'Georgian Script';
+            } else if (scriptType === 'katakana') {
+                currentAlphabet = katakanaAlphabet;
+                targetScriptKey = 'katakana';
+                document.getElementById('scriptHeader').textContent = 'Katakana (Japanese)';
             }
             
             combinationData = getCombinations(currentAlphabet, targetScriptKey);
@@ -793,19 +1123,26 @@
             let deck = [];
             selected.forEach(p => {
                 const matchKey = p.id || p.latin;
-                const isOrkhon = targetScriptKey === 'orkhon';
+                let firstCardText = p[script] || p.latin;
                 
                 deck.push({ 
-                    t: p[script], 
+                    t: firstCardText, 
                     m: matchKey, 
-                    isUy: false, 
-                    isOrkhon: false 
+                    isUy: false,
+                    isOrkhon: false,
+                    isDevanagari: false,
+                    isGeorgian: false,
+                    isKatakana: false
                 });
+                
                 deck.push({ 
                     t: p[targetScriptKey], 
                     m: matchKey, 
                     isUy: targetScriptKey === 'uyghur', 
-                    isOrkhon: targetScriptKey === 'orkhon' 
+                    isOrkhon: targetScriptKey === 'orkhon',
+                    isDevanagari: targetScriptKey === 'devanagari',
+                    isGeorgian: targetScriptKey === 'georgian',
+                    isKatakana: targetScriptKey === 'katakana'
                 });
             });
             deck.sort(() => 0.5 - Math.random());
@@ -819,7 +1156,7 @@
                 card.innerHTML = `
                     <div class="card-inner">
                         <div class="card-face card-front"></div>
-                        <div class="card-face card-back ${item.isUy ? 'is-uyghur' : ''} ${item.isOrkhon ? 'is-orkhon' : ''}">${item.t}</div>
+                        <div class="card-face card-back ${item.isUy ? 'is-uyghur' : ''} ${item.isOrkhon ? 'is-orkhon' : ''} ${item.isDevanagari ? 'is-devanagari' : ''} ${item.isGeorgian ? 'is-georgian' : ''} ${item.isKatakana ? 'is-katakana' : ''}">${item.t}</div>
                     </div>`;
                 card.onclick = handleFlip;
                 board.appendChild(card);
@@ -842,7 +1179,6 @@
             lock = true;
 
             if(firstCard.dataset.match === secondCard.dataset.match) {
-                // MATCH - Change color
                 setTimeout(() => {
                     firstCard.classList.add('matched'); 
                     secondCard.classList.add('matched');
@@ -872,7 +1208,6 @@
                     }
                 }, 300);
             } else {
-                // MISS - Only lose life if all cards have been seen
                 const totalCards = document.querySelectorAll('.card').length;
                 const allSeen = allFlippedOnce.size === totalCards;
                 
@@ -883,7 +1218,6 @@
                     secondCard = null; 
                     lock = false;
                     
-                    // Only deduct life if all tiles have been checked at least once
                     if(stakesEnabled && allSeen) {
                         streak = 0;
                         lives--;
@@ -905,7 +1239,6 @@
             }
         }
 
-        // DRAWING LOGIC
         function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
         function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
         function nextDrawing() {
@@ -914,14 +1247,11 @@
             const script = document.getElementById('scriptType').value;
             const item = data[Math.floor(Math.random() * data.length)];
             
-            // Update target text
             const targetText = item[script];
             document.getElementById('drawTarget').textContent = targetText;
             
-            // Set new brush color based on the letter
             currentBrushColor = getColorForLetter(targetText);
             
-            // Update ghost preview with the native script
             const ghostLetter = document.getElementById('ghostLetter');
             ghostLetter.textContent = item[targetScriptKey];
             ghostLetter.className = 'ghost-preview';
@@ -930,6 +1260,12 @@
                 ghostLetter.classList.add('is-uyghur');
             } else if (targetScriptKey === 'orkhon') {
                 ghostLetter.classList.add('is-orkhon');
+            } else if (targetScriptKey === 'devanagari') {
+                ghostLetter.classList.add('is-devanagari');
+            } else if (targetScriptKey === 'georgian') {
+                ghostLetter.classList.add('is-georgian');
+            } else if (targetScriptKey === 'katakana') {
+                ghostLetter.classList.add('is-katakana');
             }
             
             clearCanvas();
@@ -962,8 +1298,9 @@
         }, {passive: false});
         canvas.addEventListener('touchend', () => drawing = false);
 
-        // Load saved progress on page load
         loadProgress();
     </script>
 </body>
 </html>
+
+```
